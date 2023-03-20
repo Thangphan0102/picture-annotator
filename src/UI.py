@@ -3,8 +3,8 @@ from config import IMAGE_EXTENSIONS
 import glob
 from PyQt6.QtWidgets import QMainWindow, QGraphicsScene, \
     QGraphicsView, QWidget, QApplication, QDockWidget, QFileDialog, \
-    QTextEdit, QMenuBar, QLabel, QGraphicsPixmapItem, QHBoxLayout, QScrollArea, QVBoxLayout, QPushButton
-from PyQt6.QtGui import QIcon, QAction, QPixmap, QImage
+    QTextEdit, QMenuBar, QLabel, QHBoxLayout, QScrollArea, QVBoxLayout
+from PyQt6.QtGui import QIcon, QAction, QPixmap
 from PyQt6.QtCore import Qt
 import sys
 
@@ -83,10 +83,11 @@ class UI(QMainWindow):
         self.setMenuBar(menu_bar)
 
     def _create_dock(self):
+        # Create dock
         dock_widget = QDockWidget('Dock', self)
         dock_widget.setWidget(QTextEdit())
 
-        # Disable dock widget's movable and floatable features
+        # Disable dock widget's movable feature
         dock_widget.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, dock_widget)
 
