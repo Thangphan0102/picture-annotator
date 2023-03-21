@@ -3,7 +3,8 @@ from config import IMAGE_EXTENSIONS
 import glob
 from PyQt6.QtWidgets import QMainWindow, QGraphicsScene, \
     QGraphicsView, QWidget, QApplication, QDockWidget, QFileDialog, \
-    QTextEdit, QMenuBar, QLabel, QHBoxLayout, QScrollArea, QVBoxLayout
+    QTextEdit, QMenuBar, QLabel, QHBoxLayout, QScrollArea, QVBoxLayout, QListWidget, QListView, QGraphicsPixmapItem, \
+    QGraphicsItem
 from PyQt6.QtGui import QIcon, QAction, QPixmap
 from PyQt6.QtCore import Qt
 import sys
@@ -22,22 +23,20 @@ class UI(QMainWindow):
         self.setWindowTitle('Picture annotator')
         self.setGeometry(300, 300, 1400, 800)
 
-    def _view_images(self, directory_path=None):
-        self.widget = QWidget()
+    def _list_images(self, directory_path=None):
+        self.list_widget = QListWidget()
         self.vbox = QVBoxLayout()
 
         image_filenames = []
         for extension in IMAGE_EXTENSIONS:
             image_filenames.extend(glob.glob(os.path.join(directory_path, extension)))
 
-        for image_filename in image_filenames:
-            label = QLabel()
-            pixmap = QPixmap(image_filename).scaledToWidth(260)
-            label.setPixmap(pixmap)
-            self.vbox.addWidget(label)
+        for index, image_filename in enumerate(image_filenames):
+            self.list_widget.insertItem(index, image_filename.split('/')[-1])
 
-        self.widget.setLayout(self.vbox)
-        self.scroll.setWidget(self.widget)
+        self.list_widget.itemSelectionChanged.connect(self._select_item)
+        self.vbox.addWidget(self.list_widget)
+        self.scroll.setLayout(self.vbox)
 
     def _create_main_view(self):
         self.main_widget = QWidget()
@@ -93,10 +92,16 @@ class UI(QMainWindow):
 
     def _show_dialog(self):
         self.directory_path = QFileDialog.getExistingDirectory(self, 'Select a directory')
-        self._view_images(self.directory_path)
+        self._list_images(self.directory_path)
 
     def _show_help(self):
         pass
+
+    def _select_item(self):
+        item = self.list_widget.currentItem()
+        self.scene.clear()
+        pixmap = QPixmap(self.directory_path + '/' + item.text()).scaledToWidth(800)
+        self.scene.addPixmap(pixmap)
 
 
 def main():
