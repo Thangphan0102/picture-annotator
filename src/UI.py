@@ -1,15 +1,12 @@
-import os
 import sys
-import glob
+
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QShortcut, QKeySequence, QAction, QIcon, QPen
-from PyQt6.QtWidgets import QMainWindow, QApplication, QGridLayout, QWidget, QMenuBar, QFileDialog, QDockWidget, \
-    QTextEdit, QHBoxLayout, QScrollArea, QListWidget, QVBoxLayout, QLabel, QGraphicsScene, QGraphicsView
-from src.canvas import Canvas
+from PyQt6.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QGraphicsScene, QGraphicsView
+
+from src.dock_bar import DockBar
+from src.file_list import FileList
 from src.menu_bar import MenuBar
 from src.file_view import FileView
-from src.dock_bar import DockBar
-from config import *
 
 
 class UI(QMainWindow):
@@ -21,7 +18,7 @@ class UI(QMainWindow):
     def init_ui(self):
         self._config()
         self._create_menu_bar()
-        self._create_dock()
+        self._create_dock_bar()
         self._create_file_view()
         self._create_main_view()
 
@@ -45,12 +42,12 @@ class UI(QMainWindow):
     def _create_menu_bar(self):
         self.setMenuBar(MenuBar(self))
 
-    def _create_dock(self):
+    def _create_dock_bar(self):
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, DockBar('Dock', self))
 
     def _config(self):
         self.setWindowTitle('Picture annotator')
-        self.setGeometry(1200, 300, 1400, 1000)
+        self.setGeometry(1000, 300, 1400, 1000)
 
 
 if __name__ == '__main__':

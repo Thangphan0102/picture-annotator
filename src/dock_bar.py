@@ -9,5 +9,6 @@ class DockBar(QDockWidget):
         self.config()
 
     def config(self):
-        self.setFixedWidth(200)
+        self.setWindowTitle(self.title)
+        self.setMinimumWidth(300)
         self.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
