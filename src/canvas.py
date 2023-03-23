@@ -1,7 +1,5 @@
-import sys
-
-from PyQt6.QtCore import Qt, QKeyCombination, QPoint
-from PyQt6.QtGui import QImage, QPainter, QPen, QKeyEvent, QColor
+from PyQt6.QtCore import Qt, QPoint
+from PyQt6.QtGui import QImage, QPainter, QPen, QColor, QAction
 from PyQt6.QtWidgets import QWidget, QInputDialog
 
 
@@ -20,12 +18,11 @@ class Canvas(QWidget):
         self.rectangle_width = None
         self.rectangle_height = None
 
+        self.create_shortcuts()
+
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
-            self.pressed = True
             self.start_point = event.pos()
-            self.end_point = event.pos()
-            self.update()
 
     def mouseMoveEvent(self, event):
         if event.buttons() & Qt.MouseButton.LeftButton:
@@ -61,6 +58,7 @@ class Canvas(QWidget):
     def undo(self):
         if self.revisions and self.labels:
             self.image = self.revisions.pop()
+            self.labels.pop()
             self.update()
 
     def reset(self):
@@ -109,3 +107,20 @@ class Canvas(QWidget):
             self.end_point = QPoint(image_x1 + 1, image_y2)
         if (event.pos().x() > image_x2) and (event.pos().y() < image_y1):   # 3
             self.end_point = QPoint(image_x2, image_y1 + 1)
+
+    def create_shortcuts(self):
+        undo_action = QAction('Undo', self)
+        undo_action.setShortcut('Ctrl+Z')
+        undo_action.triggered.connect(self.undo)
+
+        reset_action = QAction('Reset', self)
+        reset_action.setShortcut('Ctrl+R')
+        reset_action.triggered.connect(self.reset)
+
+        print_labels_action = QAction('Print labels', self)
+        print_labels_action.setShortcut('Ctrl+D')
+        print_labels_action.triggered.connect(self.print_labels)
+
+        self.addAction(undo_action)
+        self.addAction(reset_action)
+        self.addAction(print_labels_action)

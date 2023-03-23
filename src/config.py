@@ -1,1 +1,1 @@
-IMAGE_EXTENSIONS = ['.jpeg', '.jpg', '.png']
+IMAGE_EXTENSIONS = ['*.jpeg', '*.jpg', '*.png']
