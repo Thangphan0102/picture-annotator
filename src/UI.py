@@ -9,13 +9,12 @@ class UI(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        w = QWidget()
-        self.setCentralWidget(w)
         canvas = Canvas('../data/helsinki.jpg')
-        grid = QGridLayout(w)
-        grid.addWidget(canvas)
+        self.setCentralWidget(canvas)
+        self.setGeometry(1200, 300, 300, 300)
         QShortcut(QKeySequence('Ctrl+Z'), self, canvas.undo)
         QShortcut(QKeySequence('Ctrl+R'), self, canvas.reset)
+        QShortcut(QKeySequence('Ctrl+D'), self, canvas.print_labels)
 
 
 if __name__ == '__main__':
