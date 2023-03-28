@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
 
-from src.file_list import FileList
+from file_list import FileList
 
 
 class FileView(QWidget):
