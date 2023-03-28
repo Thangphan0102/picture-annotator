@@ -11,9 +11,36 @@ on the canvas in the middle.
 
 ## Instructions
 
->Important! The user should have a directory that contains some pictures in these formats .png, .jpg, or .jpeg 
+>Important! The user should have a directory that contains some pictures in these formats .png, .jpg, or .jpeg
 
-- The program can be executed by running the python file located at `src/UI.py`
+- Start by creating a directory with its name such as `picture_annotator`.
+
+```commandline
+mkdir picture_annotator
+cd picture_annotator
+```
+
+- Clone the repository.
+
+```commandline
+git clone git@version.aalto.fi:phanct1/y2_2023_08713_picture_annotator.git
+cd y2_2023_08713_picture_annotator
+```
+
+- Next, create a virtual environment, activate it, and install the requirement packages
+
+```commandline
+python -m venv venv
+source ./venv/bin/activate
+pip install -r requirements.txt
+```
+
+- Run the program by running
+
+```commandline
+python3 src/UI.py
+```
+
 - When a window pops up, navigate to the menu bar and select `File > Open file..` (or by pressing "Ctrl + O") then choose 
 the directory where the pictures are located.
 - Selecting the picture from the left-hand view displays it on the middle canvas.
