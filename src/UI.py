@@ -3,10 +3,10 @@ import sys
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QGraphicsScene, QGraphicsView
 
-from src.dock_bar import DockBar
-from src.file_list import FileList
-from src.menu_bar import MenuBar
-from src.file_view import FileView
+from dock_bar import DockBar
+from file_list import FileList
+from menu_bar import MenuBar
+from file_view import FileView
 
 
 class UI(QMainWindow):

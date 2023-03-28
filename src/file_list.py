@@ -3,8 +3,8 @@ import os
 
 from PyQt6.QtWidgets import QListWidget, QGridLayout
 
-from src.canvas import Canvas
-from src.config import IMAGE_EXTENSIONS
+from canvas import Canvas
+from config import IMAGE_EXTENSIONS
 
 
 class FileList(QListWidget):
