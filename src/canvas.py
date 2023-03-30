@@ -1,16 +1,22 @@
+import os
+from pathlib import Path
+
+from pascal_voc_writer import Writer
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QImage, QPainter, QPen, QColor, QAction
 from PyQt6.QtWidgets import QWidget, QInputDialog
 
 
 class Canvas(QWidget):
-    def __init__(self, photo, *args, **kwargs):
+    def __init__(self, image_path, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.image = QImage(photo)
+        self.image_path = image_path
+        self.image = QImage(self.image_path)
         self.setFixedSize(self.image.width(), self.image.height())
         self.pressed = self.moving = False
         self.revisions = []
         self.labels = []
+        self.writer = Writer(self.image_path, self.image.width(), self.image.height())
 
         self.set_pen()
         self.start_point = None
@@ -65,7 +71,16 @@ class Canvas(QWidget):
             self.update()
 
     def save(self):
-        pass
+        for label in self.labels:
+            name, xmin, ymin, xmax, ymax = label
+            self.writer.addObject(name, xmin, ymin, xmax, ymax)
+
+        data_path = Path(self.image_path).parent.parent
+
+        file_name = Path(self.image_path).name
+        export_file_name = Path(file_name).with_suffix('.xml')
+        export_path = Path(data_path).joinpath('annotations').joinpath(export_file_name)
+        self.writer.save(export_path)
 
     def print_labels(self):
         print(self.labels)
@@ -77,7 +92,7 @@ class Canvas(QWidget):
             self.revisions.append(self.image.copy())
             self.draw_rectangle(qp)
             self.labels.append(
-                [[self.start_point.x(), self.start_point.y(), self.end_point.x(), self.end_point.y()], label]
+                [label, self.start_point.x(), self.start_point.y(), self.end_point.x(), self.end_point.y()]
             )
 
     def set_pen(self):

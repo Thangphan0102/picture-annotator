@@ -1,5 +1,6 @@
 import glob
 import os
+from pathlib import Path
 
 from PyQt6.QtWidgets import QListWidget, QGridLayout
 
@@ -23,7 +24,7 @@ class FileList(QListWidget):
             image_file_paths.extend(glob.glob(os.path.join(directory_path, extension)))
 
         for index, image_file_path in enumerate(image_file_paths):
-            self.insertItem(index, image_file_path.split('/')[-1])
+            self.insertItem(index, Path(image_file_path).name)
 
         self.itemSelectionChanged.connect(self._select_item)
 
