@@ -35,11 +35,7 @@ class Canvas(QWidget):
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
-            self.revisions.append(self.image.copy())
-            qp = QPainter(self.image)
-            if self.moving:
-                self.draw_rectangle(qp)
-                self.add_label()
+            self.add_label()
             self.moving = False
             self.update()
 
@@ -68,12 +64,18 @@ class Canvas(QWidget):
             self.labels.clear()
             self.update()
 
+    def save(self):
+        pass
+
     def print_labels(self):
         print(self.labels)
 
     def add_label(self):
+        qp = QPainter(self.image)
         label, ok = QInputDialog.getText(self, 'Class label', 'Enter class label')
         if ok:
+            self.revisions.append(self.image.copy())
+            self.draw_rectangle(qp)
             self.labels.append(
                 [[self.start_point.x(), self.start_point.y(), self.end_point.x(), self.end_point.y()], label]
             )
@@ -117,10 +119,15 @@ class Canvas(QWidget):
         reset_action.setShortcut('Ctrl+R')
         reset_action.triggered.connect(self.reset)
 
+        save_action = QAction('Save', self)
+        save_action.setShortcut('Ctrl+S')
+        save_action.triggered.connect(self.save)
+
         print_labels_action = QAction('Print labels', self)
         print_labels_action.setShortcut('Ctrl+D')
         print_labels_action.triggered.connect(self.print_labels)
 
         self.addAction(undo_action)
         self.addAction(reset_action)
+        self.addAction(save_action)
         self.addAction(print_labels_action)
