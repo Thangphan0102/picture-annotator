@@ -43,7 +43,8 @@ class UI(QMainWindow):
         self.setMenuBar(MenuBar(self))
 
     def _create_dock_bar(self):
-        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, DockBar('Dock', self))
+        self.dock_bar = DockBar('Dock', self)
+        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.dock_bar)
 
     def _config(self):
         self.setWindowTitle('Picture annotator')
