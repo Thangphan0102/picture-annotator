@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 
 from pascal_voc_writer import Writer
-from PyQt6.QtCore import Qt, QPoint
-from PyQt6.QtGui import QImage, QPainter, QPen, QColor, QAction, QTextItem, QColorConstants
+from PyQt6.QtCore import Qt, QPoint, QRect
+from PyQt6.QtGui import QImage, QPainter, QPen, QColor, QAction, QTextItem, QColorConstants, QMouseEvent, QPaintEvent, QEnterEvent
 from PyQt6.QtWidgets import QWidget, QInputDialog, QColorDialog
 
 
@@ -23,8 +23,11 @@ class Canvas(QWidget):
         self.pen.setColor(QColorConstants.Red)
         self.pen.setWidth(3)
 
-        self.moving = False
+        self.idle = True
+        self.drawing = False
+        self.guide_line_on = True
 
+        self.position = QPoint()
         self.start_point = None
         self.end_point = None
         self.rectangle_width = None
@@ -32,37 +35,66 @@ class Canvas(QWidget):
 
         self.create_shortcuts()
 
-    def mousePressEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.start_point = event.pos()
+        self.setMouseTracking(True)
 
-    def mouseMoveEvent(self, event):
-        if event.buttons() & Qt.MouseButton.LeftButton:
-            self.moving = True
-            self.end_point = event.pos()
-            self.check_mouse(event)
-            self.rectangle_width = self.end_point.x() - self.start_point.x()
-            self.rectangle_height = self.end_point.y() - self.start_point.y()
-            self.update()
+    def mousePressEvent(self, event: QMouseEvent):
+        if self.idle:
+            if event.button() == Qt.MouseButton.LeftButton:
+                self.start_point = event.pos()
 
-    def mouseReleaseEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.add_label()
-            self.moving = False
-            self.update()
+    def mouseMoveEvent(self, event: QMouseEvent):
+        if self.idle:
+            if self.guide_line_on:
+                self.position = event.pos()
+                self.update()
 
-    def paintEvent(self, event):
+            if event.buttons() & Qt.MouseButton.LeftButton:
+                self.drawing = True
+                self.end_point = event.pos()
+                self.check_mouse(event)
+                self.rectangle_width = self.end_point.x() - self.start_point.x()
+                self.rectangle_height = self.end_point.y() - self.start_point.y()
+                self.update()
+
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        if self.idle:
+            if event.button() == Qt.MouseButton.LeftButton:
+                self.add_label()
+                self.drawing = False
+                self.update()
+
+    def enterEvent(self, event) -> None:
+        if self.idle:
+            self.position = event.position().toPoint()
+
+    def leaveEvent(self, event) -> None:
+        self.position = None
+        self.update()
+
+    def paintEvent(self, event: QPaintEvent):
         qp = QPainter(self)
         rect = event.rect()
         qp.drawImage(rect, self.image, rect)
-        if self.moving:
+        if self.guide_line_on and self.position is not None:
+            qp.setPen(QPen(QColorConstants.White, 3))
+
+            # Draw horizontal guide line
+            qp.drawLine(0, self.position.y(), self.image.width(), self.position.y())
+
+            # Draw vertical guide line
+            qp.drawLine(self.position.x(), 0, self.position.x(), self.image.height())
+
+        if self.drawing:
             self.draw_rectangle(qp)
 
-    def draw_rectangle(self, qp, color=QColorConstants.Red):
+    def draw_rectangle(self, qp, color=QColorConstants.Red, fill=True):
         qp.setRenderHint(QPainter.RenderHint.Antialiasing)
         self.pen.setColor(color)
         qp.setPen(self.pen)
-        qp.drawRect(self.start_point.x(), self.start_point.y(), self.rectangle_width, self.rectangle_height)
+        rect = QRect(self.start_point.x(), self.start_point.y(), self.rectangle_width, self.rectangle_height)
+        qp.drawRect(rect)
+        if fill:
+            qp.fillRect(rect, QColor(255, 0, 0, 30))
 
     def add_text(self, qp, text):
         font = qp.font()
@@ -108,6 +140,7 @@ class Canvas(QWidget):
         print(self.label_color_dict)
 
     def add_label(self):
+        self.idle = False
         qp = QPainter(self.image)
         label, ok = QInputDialog.getText(self, 'Class label', 'Enter class label')
         if ok:
@@ -117,12 +150,13 @@ class Canvas(QWidget):
             else:
                 color = self.label_color_dict[label]
             self.revisions.append(self.image.copy())
-            self.draw_rectangle(qp, color)
+            self.draw_rectangle(qp, color=color, fill=False)
             self.add_text(qp, label)
             self.labels.append(label)
             self.bounding_boxes.append(
                 [self.start_point.x(), self.start_point.y(), self.end_point.x(), self.end_point.y()]
             )
+        self.idle = True
 
     def check_mouse(self, event):
         # Check if mouse move outside of image
