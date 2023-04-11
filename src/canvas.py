@@ -10,15 +10,17 @@ from image import *
 
 
 class Canvas(QWidget):
-    def __init__(self, image_path, *args, **kwargs):
+    def __init__(self, image_path, main_window, *args, **kwargs):
         super(Canvas, self).__init__(*args, **kwargs)
 
+        self.main_window = main_window
         self.image = Image(image_path)
 
         self.drawing = False
         self.idle = True
         self.guide_line_on = True
         self.mouse_pos = None
+        self.visible = {}
 
         self.create_shortcuts()
         self.setMouseTracking(True)
@@ -27,14 +29,16 @@ class Canvas(QWidget):
     def paintEvent(self, event: QPaintEvent):
         p = QPainter(self)
         rect = event.rect()
+
         p.drawPixmap(rect, self.image, rect)
 
         for label, bounding_box in zip(self.image.labels, self.image.bounding_boxes):
-            x1, y1, x2, y2 = bounding_box
-            bounding = QRect(x1, y1, x2 - x1, y2 - y1)
-            color = self.image.label_color_dict[label]
-            self.draw_rectangle(p, bounding, color, fill=False)
-            self.draw_text(p, label, x1, y1, x2, y2)
+            if self.visible[label]:
+                x1, y1, x2, y2 = bounding_box
+                bounding = QRect(x1, y1, x2 - x1, y2 - y1)
+                color = self.image.label_color_dict[label]
+                self.draw_rectangle(p, bounding, color, fill=False)
+                self.draw_text(p, label, x1, y1, x2, y2)
 
         if self.guide_line_on and self.mouse_pos is not None:
             p.setPen(QPen(QColorConstants.White, 1))
@@ -101,6 +105,9 @@ class Canvas(QWidget):
                     options=QColorDialog.ColorDialogOption.DontUseNativeDialog
                 )
                 self.image.label_color_dict[label] = color
+            if label not in set(self.image.labels):
+                self.main_window.filter_widget.add_label(label, color)
+                self.visible[label] = True
             self.image.add_label(label)
             self.image.add_bounding_box(self.start_point, self.end_point)
         self.idle = True
@@ -147,6 +154,8 @@ class Canvas(QWidget):
             self.image.bounding_boxes.pop()
             if label not in self.image.labels:
                 self.image.label_color_dict.pop(label)
+                self.main_window.filter_widget.undo(label)
+                self.visible.pop(label)
             self.update()
 
     def reset(self):
@@ -154,6 +163,8 @@ class Canvas(QWidget):
             self.image.labels.clear()
             self.image.bounding_boxes.clear()
             self.image.label_color_dict.clear()
+            self.visible.clear()
+            self.main_window.filter_widget.reset()
             self.update()
 
     def save(self):
@@ -173,6 +184,7 @@ class Canvas(QWidget):
         print(self.image.labels)
         print(self.image.bounding_boxes)
         print(self.image.label_color_dict)
+        print(self.visible)
 
     def create_shortcuts(self):
         undo_action = QAction('Undo', self)
@@ -195,3 +207,7 @@ class Canvas(QWidget):
         self.addAction(reset_action)
         self.addAction(save_action)
         self.addAction(print_labels_action)
+
+    def change_visible_boxes(self, label, value):
+        self.visible[label] = value
+        self.repaint()
