@@ -15,6 +15,7 @@ class Canvas(QWidget):
 
         self.main_window = main_window
         self.image = Image(image_path)
+        self.main_window.scene.addPixmap(self.image)
 
         self.drawing = False
         self.idle = True
@@ -25,12 +26,10 @@ class Canvas(QWidget):
         self.create_shortcuts()
         self.setMouseTracking(True)
         self.setFixedSize(self.image.width(), self.image.height())
+        self.setStyleSheet("background-color: transparent;")
 
     def paintEvent(self, event: QPaintEvent):
         p = QPainter(self)
-        rect = event.rect()
-
-        p.drawPixmap(rect, self.image, rect)
 
         for label, bounding_box in zip(self.image.labels, self.image.bounding_boxes):
             if self.visible[label]:
