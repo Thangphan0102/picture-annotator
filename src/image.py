@@ -4,9 +4,10 @@ from PyQt6.QtWidgets import *
 
 
 class Image(QPixmap):
-    def __init__(self, file_path):
-        super(Image, self).__init__(file_path)
+    def __init__(self, image_path):
+        super(Image, self).__init__(image_path)
 
+        self.image_path = image_path
         self.labels = []
         self.bounding_boxes = []
         self.label_color_dict = {}

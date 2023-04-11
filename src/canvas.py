@@ -93,10 +93,13 @@ class Canvas(QWidget):
 
     def insert_label(self):
         self.idle = False
-        label, ok = QInputDialog.getText(self, 'Class label', 'Enter class label')
+        label, ok = QInputDialog.getText(None, 'Class label', 'Enter class label')
         if ok:
             if label not in self.image.label_color_dict.keys():
-                color = QColorDialog.getColor(options=QColorDialog.ColorDialogOption.DontUseNativeDialog)
+                color = QColorDialog.getColor(
+                    initial=QColorConstants.Red,
+                    options=QColorDialog.ColorDialogOption.DontUseNativeDialog
+                )
                 self.image.label_color_dict[label] = color
             self.image.add_label(label)
             self.image.add_bounding_box(self.start_point, self.end_point)
@@ -154,17 +157,17 @@ class Canvas(QWidget):
             self.update()
 
     def save(self):
-        self.writer = Writer(self.image_path, self.image.width(), self.image.height())
+        writer = Writer(self.image.image_path, self.image.width(), self.image.height())
 
         for label, bounding_box in zip(self.image.labels, self.image.bounding_boxes):
             x1, y1, x2, y2 = bounding_box
-            self.writer.addObject(label, x1, y1, x2, y2)
+            writer.addObject(label, x1, y1, x2, y2)
 
-        data_path = Path(self.image_path).parent.parent
-        file_name = Path(self.image_path).name
+        data_path = Path(self.image.image_path).parent.parent
+        file_name = Path(self.image.image_path).name
         export_file_name = Path(file_name).with_suffix('.xml')
         export_path = Path(data_path).joinpath('annotations').joinpath(export_file_name)
-        self.writer.save(export_path)
+        writer.save(export_path)
 
     def print_labels(self):
         print(self.image.labels)
