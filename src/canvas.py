@@ -10,6 +10,10 @@ from image import *
 
 
 class Canvas(QWidget):
+
+    VIEW_MODE = True
+    DRAW_MODE = False
+
     def __init__(self, image_path, main_window, *args, **kwargs):
         super(Canvas, self).__init__(*args, **kwargs)
 
@@ -24,7 +28,6 @@ class Canvas(QWidget):
         self.visible = {}
 
         self.create_shortcuts()
-        self.setMouseTracking(True)
         self.setFixedSize(self.image.width(), self.image.height())
         self.setStyleSheet("background-color: transparent;")
 
@@ -39,20 +42,21 @@ class Canvas(QWidget):
                 self.draw_rectangle(p, bounding, color, fill=False)
                 self.draw_text(p, label, x1, y1, x2, y2)
 
-        if self.guide_line_on and self.mouse_pos is not None:
-            p.setPen(QPen(QColorConstants.White, 1))
+        if self.DRAW_MODE:
+            if self.guide_line_on and self.mouse_pos is not None:
+                p.setPen(QPen(QColorConstants.White, 1))
 
-            # Draw horizontal guide line
-            p.drawLine(0, self.mouse_pos.y(), self.image.width(), self.mouse_pos.y())
+                # Draw horizontal guide line
+                p.drawLine(0, self.mouse_pos.y(), self.image.width(), self.mouse_pos.y())
 
-            # Draw vertical guide line
-            p.drawLine(self.mouse_pos.x(), 0, self.mouse_pos.x(), self.image.height())
+                # Draw vertical guide line
+                p.drawLine(self.mouse_pos.x(), 0, self.mouse_pos.x(), self.image.height())
 
-        if self.drawing:
-            self.draw_rectangle(p)
+            if self.drawing:
+                self.draw_rectangle(p)
 
     def enterEvent(self, event: QEnterEvent) -> None:
-        if self.idle:
+        if self.idle and self.DRAW_MODE:
             self.mouse_pos = event.position().toPoint()
 
     def leaveEvent(self, event: QEvent) -> None:
@@ -60,12 +64,12 @@ class Canvas(QWidget):
         self.update()
 
     def mousePressEvent(self, event: QMouseEvent):
-        if self.idle:
+        if self.idle and self.DRAW_MODE:
             if event.button() == Qt.MouseButton.LeftButton:
                 self.start_point = event.pos()
 
     def mouseMoveEvent(self, event: QMouseEvent):
-        if self.idle:
+        if self.idle and self.DRAW_MODE:
             self.mouse_pos = event.pos()
             self.update()
 
@@ -76,7 +80,7 @@ class Canvas(QWidget):
                 self.update()
 
     def mouseReleaseEvent(self, event: QMouseEvent):
-        if self.idle and self.drawing:
+        if self.idle and self.drawing and self.DRAW_MODE:
             if event.button() == Qt.MouseButton.LeftButton:
                 self.insert_label()
                 self.drawing = False
@@ -185,6 +189,19 @@ class Canvas(QWidget):
         print(self.image.label_color_dict)
         print(self.visible)
 
+    def change_to_draw(self):
+        if not self.DRAW_MODE and self.VIEW_MODE:
+            self.DRAW_MODE = True
+            self.VIEW_MODE = False
+            self.setMouseTracking(True)
+
+    def change_to_view(self):
+        if self.DRAW_MODE and not self.VIEW_MODE:
+            self.DRAW_MODE = False
+            self.VIEW_MODE = True
+            self.setMouseTracking(False)
+            self.repaint()
+
     def create_shortcuts(self):
         undo_action = QAction('Undo', self)
         undo_action.setShortcut('Ctrl+Z')
@@ -199,13 +216,23 @@ class Canvas(QWidget):
         save_action.triggered.connect(self.save)
 
         print_labels_action = QAction('Print labels', self)
-        print_labels_action.setShortcut('Ctrl+D')
+        print_labels_action.setShortcut('Ctrl+G')
         print_labels_action.triggered.connect(self.print_labels)
+
+        change_to_draw_action = QAction('Change to draw', self)
+        change_to_draw_action.setShortcut('Ctrl+D')
+        change_to_draw_action.triggered.connect(self.change_to_draw)
+
+        change_to_view_action = QAction('Change to draw', self)
+        change_to_view_action.setShortcut('Ctrl+V')
+        change_to_view_action.triggered.connect(self.change_to_view)
 
         self.addAction(undo_action)
         self.addAction(reset_action)
         self.addAction(save_action)
         self.addAction(print_labels_action)
+        self.addAction(change_to_draw_action)
+        self.addAction(change_to_view_action)
 
     def change_visible_boxes(self, label, value):
         self.visible[label] = value
