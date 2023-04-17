@@ -223,7 +223,7 @@ class Canvas(QWidget):
         change_to_draw_action.setShortcut('Ctrl+D')
         change_to_draw_action.triggered.connect(self.change_to_draw)
 
-        change_to_view_action = QAction('Change to draw', self)
+        change_to_view_action = QAction('Change to view', self)
         change_to_view_action.setShortcut('Ctrl+V')
         change_to_view_action.triggered.connect(self.change_to_view)
 
