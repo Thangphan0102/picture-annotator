@@ -32,5 +32,6 @@ class FileList(QListWidget):
         item = self.currentItem()
         self.main_window.scene.clear()
         self.main_window.filter_widget.reset()
-        self.main_window.canvas = Canvas(os.path.join(self.directory_path, item.text()), self.main_window)
-        self.main_window.scene.addWidget(self.main_window.canvas)
+        canvas = Canvas(os.path.join(self.directory_path, item.text()), self.main_window)
+        self.main_window.scene.addWidget(canvas)
+        self.main_window.view.update_view()

@@ -2,12 +2,14 @@ import sys
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QGraphicsScene, QGraphicsView
+from PyQt6.QtGui import QWheelEvent
 
 from file_list import FileList
 from menu_bar import MenuBar
 from file_view import FileView
 from filter_widget import FilterWidget
 from canvas import Canvas
+from graphics_view import CustomGraphicsView
 
 
 class UI(QMainWindow):
@@ -30,8 +32,8 @@ class UI(QMainWindow):
 
         # Canvas area
         self.scene = QGraphicsScene()
-        self.canvas = Canvas(None, self)
-        self.view = QGraphicsView(self.scene)
+        # self.canvas = Canvas(None, self)
+        self.view = CustomGraphicsView(self.scene, self)
         self.layout.addWidget(self.view)
 
         # Filter area
