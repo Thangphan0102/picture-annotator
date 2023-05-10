@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from pascal_voc_writer import Writer
+from writer import Writer
 
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
