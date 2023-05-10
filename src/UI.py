@@ -31,6 +31,7 @@ class UI(QMainWindow):
         self.layout.addWidget(self.file_view)
 
         # Canvas area
+        self.canvas = None
         self.scene = QGraphicsScene()
         self.view = CustomGraphicsView(self.scene, self)
         self.layout.addWidget(self.view)
