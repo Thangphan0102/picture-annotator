@@ -1,5 +1,4 @@
 import sys
-from pathlib import Path
 from writer import Writer
 
 from PyQt6.QtGui import *
@@ -7,6 +6,7 @@ from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
 
 from image import *
+from config import *
 
 
 class Canvas(QWidget):
@@ -171,17 +171,13 @@ class Canvas(QWidget):
             self.update()
 
     def save(self):
-        writer = Writer(self.image.image_path, self.image.width(), self.image.height())
+        writer = Writer(self.image.get_path(), self.image.width(), self.image.height())
 
         for label, bounding_box in zip(self.image.labels, self.image.bounding_boxes):
             x1, y1, x2, y2 = bounding_box
             writer.addObject(label, x1, y1, x2, y2)
 
-        data_path = Path(self.image.image_path).parent.parent
-        file_name = Path(self.image.image_path).name
-        export_file_name = Path(file_name).with_suffix('.xml')
-        export_path = Path(data_path).joinpath('annotations').joinpath(export_file_name)
-        writer.save(export_path)
+        writer.save()
 
     def print_labels(self):
         print(self.image.labels)

@@ -12,6 +12,15 @@ class Image(QPixmap):
         self.bounding_boxes = []
         self.label_color_dict = {}
 
+    def get_path(self):
+        return self.image_path
+
+    def get_label(self):
+        return self.labels
+
+    def get_bounding_box(self):
+        return self.bounding_boxes
+
     def add_label(self, label):
         self.labels.append(label)
 

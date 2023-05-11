@@ -2,9 +2,13 @@ import os
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from config import *
+
 
 class Writer:
     def __init__(self, image_path: str, width, height, depth=3):
+        self.image_path = Path(image_path)
+
         # annotation
         self.annotation = ET.Element('annotation')
 
@@ -59,12 +63,9 @@ class Writer:
         ymax = ET.SubElement(bndbox, 'ymax')
         ymax.text = f'{y2}'
 
-    def save(self, export_path):
+    def save(self):
         # XML tree
         tree = ET.ElementTree(self.annotation)
-        ET.indent(tree)
+        ET.indent(tree, space='    ')
 
-        if os.path.exists(export_path):
-            os.remove(export_path)
-
-        tree.write(export_path, encoding='utf-8')
+        tree.write(ANNOTATION_DIR.joinpath(self.image_path.with_suffix('.xml').name), encoding='utf-8')

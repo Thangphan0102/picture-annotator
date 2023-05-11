@@ -11,6 +11,8 @@ from filter_widget import FilterWidget
 from canvas import Canvas
 from graphics_view import CustomGraphicsView
 
+import config
+
 
 class UI(QMainWindow):
 
