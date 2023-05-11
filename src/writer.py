@@ -41,7 +41,7 @@ class Writer:
         name.text = f'{label}'
 
         # annotation/object/bndbox
-        bndbox = ET.SubElement(object, 'bnbbox')
+        bndbox = ET.SubElement(object, 'bndbox')
 
         # annotation/object/bndbox/xmin
         xmin = ET.SubElement(bndbox, 'xmin')
