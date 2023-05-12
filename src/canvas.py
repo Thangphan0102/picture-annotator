@@ -1,20 +1,26 @@
 import sys
+
+try:
+    from PyQt6.QtGui import QPaintEvent, QPainter, QPen, QColorConstants, QEnterEvent, QMouseEvent, QColor, QAction
+    from PyQt6.QtCore import QRect, QEvent, Qt, QPoint
+    from PyQt6.QtWidgets import QWidget, QInputDialog, QColorDialog
+except ImportError:
+    raise ImportError("Requires PyQt6")
+
+from image import Image
 from writer import Writer
-
-from PyQt6.QtGui import *
-from PyQt6.QtCore import *
-from PyQt6.QtWidgets import *
-
-from image import *
 from config import *
 
 
 class Canvas(QWidget):
+    """
+
+    """
 
     VIEW_MODE = True
     DRAW_MODE = False
 
-    def __init__(self, image_path, main_window, *args, **kwargs):
+    def __init__(self, image_path: str, main_window, *args, **kwargs):
         super(Canvas, self).__init__(*args, **kwargs)
 
         self.main_window = main_window
@@ -34,7 +40,7 @@ class Canvas(QWidget):
     def paintEvent(self, event: QPaintEvent):
         p = QPainter(self)
 
-        for label, bounding_box in zip(self.image.labels, self.image.bounding_boxes):
+        for label, bounding_box in zip(self.image.get_label(), self.image.get_bounding_box()):
             if self.visible[label]:
                 x1, y1, x2, y2 = bounding_box
                 bounding = QRect(x1, y1, x2 - x1, y2 - y1)
@@ -108,7 +114,7 @@ class Canvas(QWidget):
                     options=QColorDialog.ColorDialogOption.DontUseNativeDialog
                 )
                 self.image.label_color_dict[label] = color
-            if label not in set(self.image.labels):
+            if label not in set(self.image.get_label()):
                 self.main_window.filter_widget.add_label(label, color)
                 self.visible[label] = True
             self.image.add_label(label)
@@ -152,18 +158,18 @@ class Canvas(QWidget):
     # Actions and shortcuts
     ###########
     def undo(self):
-        if self.image.labels:
-            label = self.image.labels.pop()
+        if self.image.get_label():
+            label = self.image.get_label().pop()
             self.image.bounding_boxes.pop()
-            if label not in self.image.labels:
+            if label not in self.image.get_label():
                 self.image.label_color_dict.pop(label)
                 self.main_window.filter_widget.undo(label)
                 self.visible.pop(label)
             self.update()
 
     def reset(self):
-        if self.image.labels:
-            self.image.labels.clear()
+        if self.image.get_label():
+            self.image.get_label().clear()
             self.image.bounding_boxes.clear()
             self.image.label_color_dict.clear()
             self.visible.clear()
@@ -173,15 +179,15 @@ class Canvas(QWidget):
     def save(self):
         writer = Writer(self.image.get_path(), self.image.width(), self.image.height())
 
-        for label, bounding_box in zip(self.image.labels, self.image.bounding_boxes):
+        for label, bounding_box in zip(self.image.get_label(), self.image.get_bounding_box()):
             x1, y1, x2, y2 = bounding_box
             writer.addObject(label, x1, y1, x2, y2)
 
         writer.save()
 
     def print_labels(self):
-        print(self.image.labels)
-        print(self.image.bounding_boxes)
+        print(self.image.get_label())
+        print(self.image.get_bounding_box())
         print(self.image.label_color_dict)
         print(self.visible)
 
