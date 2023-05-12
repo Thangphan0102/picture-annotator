@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 from PIL import Image
 from torchvision.datasets import VisionDataset
 
-from config import *
+from src.config import *
 
 
 class CustomDataset(VisionDataset):

@@ -9,6 +9,7 @@ valuable tool for any individuals.
 
 ## File and directory structure
 
+```bash
 y2_2023_08713_picture_annotator/
 ├─ data/
 │  ├─ annotations/
@@ -24,12 +25,14 @@ y2_2023_08713_picture_annotator/
 │  ├─ image.py
 │  ├─ UI.py
 │  ├─ canvas.py
-│  ├── config.py
-│  ├── writer.py
-├── .gitignore
-├── dataset.py
-├── README.md
-└── requirements.txt
+│  ├─ config.py
+│  ├─ writer.py
+├─ .gitignore
+├─ dataset.py
+├─ README.md
+└─ requirements.txt
+```
+
 
 ## Installation instructions
 

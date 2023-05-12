@@ -211,7 +211,7 @@ def evaluate_dataset(dataset, model):
 
 CLASS_DICT = {
     "background": 0,
-    "fire": 1
+    "cat": 1
 }
 
 
@@ -269,7 +269,7 @@ def target_transform(target):
 if __name__ == "__main__":
     # TODO: Remove and add your own dataset
     dataset = CustomDataset(
-        root_dir='/Users/thangphan/y2_2023_08713_picture_annotator/data',
+        root_dir='./data',
         transform=tv.transforms.ToTensor(),
         target_transform=target_transform
     )
