@@ -13,6 +13,7 @@ valuable tool for any individuals.
 y2_2023_08713_picture_annotator/
 ├─ data/
 │  ├─ annotations/
+│  ├─ images/
 ├─ doc/
 │  ├─ project_plan.pdf
 │  ├─ project_document.pdf
