@@ -10,13 +10,26 @@ from file_view import FileView
 from filter_widget import FilterWidget
 from canvas import Canvas
 from graphics_view import CustomGraphicsView
-
 import config
 
 
 class UI(QMainWindow):
+    """ The UI of the program.
 
-    def __init__(self):
+    Attributes:
+        central_widget (QWidget): The central widget of the UI.
+        layout (QLayout): The layout of the widgets inside UI.
+        file_view (FileView): The file view instance.
+        canvas (Canvas): The canvas instance.
+        scene (QGraphicsScene): The graphics scene of the UI.
+        view (CustomGraphicsView): The custom graphics view instance.
+        filter_widget (FilterWidget): The filter widget instace.
+    """
+
+    def __init__(self) -> None:
+        """ Initialize all the elements and add them into the UI.
+
+        """
         super(UI, self).__init__()
 
         self._config()
@@ -32,7 +45,7 @@ class UI(QMainWindow):
         self.file_view = FileView(self)
         self.layout.addWidget(self.file_view)
 
-        # Canvas area
+        # View area
         self.canvas = None
         self.scene = QGraphicsScene()
         self.view = CustomGraphicsView(self.scene, self)
