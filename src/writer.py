@@ -36,7 +36,7 @@ class Writer:
         self.depth = ET.SubElement(self.size, 'depth')
         self.depth.text = f'{depth}'
 
-    def addObject(self, label, x1, y1, x2, y2):
+    def add_object(self, label, x1, y1, x2, y2):
         # annotation/object
         object = ET.SubElement(self.annotation, 'object')
 
@@ -62,6 +62,10 @@ class Writer:
         # annotation/object/bndbox/ymax
         ymax = ET.SubElement(bndbox, 'ymax')
         ymax.text = f'{y2}'
+
+    def add_label_color_dict(self, label, color):
+        color_dict = ET.SubElement(self.annotation, 'color_dict')
+        color_dict.set(label, color)
 
     def save(self):
         # XML tree

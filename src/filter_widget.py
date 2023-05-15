@@ -1,3 +1,5 @@
+from typing import Dict
+
 try:
     from PyQt6.QtWidgets import QMainWindow, QLabel, QListWidget, QVBoxLayout, QListWidgetItem, QWidget
     from PyQt6.QtGui import QColor, QBrush
@@ -15,6 +17,7 @@ class FilterWidget(QWidget):
             values.
         label_list (QListWidget): The QListWidget.
     """
+
     def __init__(self, main_window: QMainWindow):
         """ Initialize the instance. Define the class variable, set layout, set fixed width, and add interactions.
 
@@ -61,6 +64,19 @@ class FilterWidget(QWidget):
 
         # Add the item to the list
         self.label_list.addItem(item)
+
+    def add_labels_from_dict(self, label_color_dict: Dict[str, str]) -> None:
+        """ Add multiple checkboxes given the label_color_dict as dictionary
+
+        Args:
+            label_color_dict (Dict[str, str]): A dictionary represents color mapping with labels as keys and colors as
+                values
+
+        Returns:
+            None
+        """
+        for label, color in label_color_dict.items():
+            self.add_label(label, QColor(color))
 
     def undo(self, label: str) -> None:
         """ Remove the checkbox if all the corresponding labels are removed

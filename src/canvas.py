@@ -46,11 +46,13 @@ class Canvas(QWidget):
         # Class variable
         self.main_window = main_window
         self.image = Image(image_path)
+        if self.image.load_annotation():
+            self.main_window.filter_widget.add_labels_from_dict(self.image.get_color_dict())
         self.drawing = False
         self.idle = True
         self.guide_line_on = True
         self.mouse_pos = None
-        self.visible = {}
+
 
         # Display the image
         self.main_window.scene.addPixmap(self.image)
@@ -82,7 +84,7 @@ class Canvas(QWidget):
 
         # Display annotations including bounding boxes and label texts (if visible)
         for label, bounding_box in zip(self.image.get_label(), self.image.get_bounding_box()):
-            if self.visible[label]:
+            if self.image.get_visible()[label]:
                 x1, y1, x2, y2 = bounding_box
                 bounding = QRect(x1, y1, x2 - x1, y2 - y1)
                 color = self.image.label_color_dict[label]
@@ -201,12 +203,12 @@ class Canvas(QWidget):
         Args:
             p (QPainter): The QPainter instance.
             rect (QRect(int, int, int, int)): The bounding box.
-            color (Union[QColor, QColorConstants]): The color of the line and filled rectangle.
+            color (str): The string represents the hex color of the line and filled rectangle.
             fill (bool): Indicator of whether to fill the rectangle.
         """
         # Painter setting
         p.setRenderHint(QPainter.RenderHint.Antialiasing)
-        p.setPen(QPen(color, 3))
+        p.setPen(QPen(QColor(color), 3))
 
         # Draw a bounding box
         if rect is None:
@@ -235,10 +237,10 @@ class Canvas(QWidget):
                     initial=QColorConstants.Red,
                     options=QColorDialog.ColorDialogOption.DontUseNativeDialog
                 )
-                self.image.label_color_dict[label] = color
+                self.image.label_color_dict[label] = color.name()
             if label not in set(self.image.get_label()):
-                self.main_window.filter_widget.add_label(label, color)
-                self.visible[label] = True
+                self.main_window.filter_widget.add_label(label, QColor(color))
+                self.image.visible[label] = True
             self.image.add_label(label)
             self.image.add_bounding_box(self.start_point, self.end_point)
         self.idle = True
@@ -312,7 +314,7 @@ class Canvas(QWidget):
         Returns:
             None
         """
-        self.visible[label] = value
+        self.image.visible[label] = value
         self.repaint()
 
     """
@@ -335,7 +337,7 @@ class Canvas(QWidget):
             if label not in self.image.get_label():
                 self.image.label_color_dict.pop(label)
                 self.main_window.filter_widget.undo(label)
-                self.visible.pop(label)
+                self.image.visible.pop(label)
             self.update()
 
     def reset(self):
@@ -350,7 +352,7 @@ class Canvas(QWidget):
             self.image.get_label().clear()
             self.image.bounding_boxes.clear()
             self.image.label_color_dict.clear()
-            self.visible.clear()
+            self.image.visible.clear()
             self.main_window.filter_widget.reset()
             self.update()
 
@@ -366,7 +368,10 @@ class Canvas(QWidget):
 
         for label, bounding_box in zip(self.image.get_label(), self.image.get_bounding_box()):
             x1, y1, x2, y2 = bounding_box
-            writer.addObject(label, x1, y1, x2, y2)
+            writer.add_object(label, x1, y1, x2, y2)
+
+        for label, color in self.image.get_color_dict().items():
+            writer.add_label_color_dict(label, color)
 
         writer.save()
 
@@ -380,7 +385,8 @@ class Canvas(QWidget):
         """
         print(self.image.get_label())
         print(self.image.get_bounding_box())
-        print(self.visible)
+        print(self.image.get_color_dict())
+        print(self.image.get_visible())
 
     def change_to_draw(self) -> None:
         """ Change to draw mode action.
