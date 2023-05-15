@@ -1,13 +1,12 @@
-import collections
 import glob
-import os
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 import xml.etree.ElementTree as ET
 
 from PIL import Image
 from torchvision.datasets import VisionDataset
 
 from src.config import *
+from src.utils import parse_xml
 
 
 class CustomDataset(VisionDataset):
@@ -36,13 +35,11 @@ class CustomDataset(VisionDataset):
         """
         super().__init__(root_dir, transforms, transform, target_transform)
 
-        image_dir = Path(root_dir).joinpath('images')
         self.images = []
         for extension in IMAGE_EXTENSIONS:
-            self.images.extend(glob.glob(os.path.join(image_dir, extension)))
+            self.images.extend(glob.glob(os.path.join(IMAGE_DIR, extension)))
 
-        target_dir = Path(root_dir).joinpath('annotations')
-        self.targets = glob.glob(os.path.join(target_dir, '*.xml'))
+        self.targets = glob.glob(os.path.join(ANNOTATION_DIR, '*.xml'))
 
         assert len(self.images) == len(self.targets)
 
@@ -88,35 +85,9 @@ class CustomDataset(VisionDataset):
             images, labels (Tuple[Any, Any]): The images and labels of the dataset.
         """
         img = Image.open(self.images[index]).convert("RGB")
-        target = self.parse_xml(ET.parse(self.annotations[index]).getroot())
+        target = parse_xml(ET.parse(self.annotations[index]).getroot())
 
         if self.transforms is not None:
             img, target = self.transforms(img, target)
 
         return img, target
-
-    @staticmethod
-    def parse_xml(node: ET.Element) -> Dict[str, Any]:
-        """ Parse the xml of the given node
-
-        Args:
-            node (ET.Element): An element of the xml tree.
-
-        Returns:
-            result_dict (Dict[str, Any]): The dictionary of node tags as keys and it texts as values.
-        """
-        result_dict: Dict[str, Any] = {}
-        children = list(node)
-        if children:
-            def_dic: Dict[str, Any] = collections.defaultdict(list)
-            for dc in map(CustomDataset.parse_xml, children):
-                for ind, v in dc.items():
-                    def_dic[ind].append(v)
-            if node.tag == "annotation":
-                def_dic["object"] = [def_dic["object"]]
-            result_dict = {node.tag: {ind: v[0] if len(v) == 1 else v for ind, v in def_dic.items()}}
-        if node.text:
-            text = node.text.strip()
-            if not children:
-                result_dict[node.tag] = text
-        return result_dict
