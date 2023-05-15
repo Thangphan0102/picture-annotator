@@ -1,4 +1,6 @@
+.gitignore
 venv
+data
 .idea
 .DS_Store
 .DS_Store?
