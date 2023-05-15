@@ -1,7 +1,10 @@
 from typing import List, Tuple
 
-from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import QPoint
+try:
+    from PyQt6.QtGui import QPixmap
+    from PyQt6.QtCore import QPoint
+except ImportError:
+    raise ImportError("Requires PyQt6")
 
 
 class Image(QPixmap):

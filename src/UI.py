@@ -1,8 +1,9 @@
 import sys
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QGraphicsScene, QGraphicsView
-from PyQt6.QtGui import QWheelEvent
+try:
+    from PyQt6.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QGraphicsScene
+except ImportError:
+    raise ImportError("Requires PyQt6")
 
 from file_list import FileList
 from menu_bar import MenuBar

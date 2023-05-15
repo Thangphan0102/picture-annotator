@@ -1,4 +1,7 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QMainWindow
+try:
+    from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QMainWindow
+except ImportError:
+    raise ImportError("Requires PyQt6")
 
 from file_list import FileList
 

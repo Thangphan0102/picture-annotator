@@ -2,7 +2,10 @@ import glob
 import os
 from pathlib import Path
 
-from PyQt6.QtWidgets import QListWidget, QGridLayout, QMainWindow
+try:
+    from PyQt6.QtWidgets import QListWidget, QGridLayout, QMainWindow
+except ImportError:
+    raise ImportError("Requires PyQt6")
 
 from canvas import Canvas
 from config import IMAGE_EXTENSIONS

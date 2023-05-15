@@ -1,5 +1,8 @@
-from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QMenuBar, QFileDialog, QMainWindow
+try:
+    from PyQt6.QtGui import QAction
+    from PyQt6.QtWidgets import QMenuBar, QFileDialog, QMainWindow
+except ImportError:
+    raise ImportError("Requires PyQt6")
 
 
 class MenuBar(QMenuBar):

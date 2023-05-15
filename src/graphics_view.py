@@ -1,7 +1,11 @@
-from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
-from PyQt6.QtCore import *
 import os
+
+try:
+    from PyQt6.QtWidgets import QGraphicsView, QGraphicsScene, QMainWindow
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtGui import QWheelEvent
+except ImportError:
+    raise ImportError("Requires PyQt6")
 
 from canvas import Canvas
 

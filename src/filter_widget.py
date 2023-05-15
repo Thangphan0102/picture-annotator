@@ -1,6 +1,9 @@
-from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
-from PyQt6.QtCore import *
+try:
+    from PyQt6.QtWidgets import QMainWindow, QLabel, QListWidget, QVBoxLayout, QListWidgetItem, QWidget
+    from PyQt6.QtGui import QColor, QBrush
+    from PyQt6.QtCore import Qt
+except ImportError:
+    raise ImportError("Requires PyQt6")
 
 
 class FilterWidget(QWidget):
