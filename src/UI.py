@@ -39,25 +39,24 @@ class UI(QMainWindow):
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
 
-        # Set layout
-        self.layout = QHBoxLayout(self.central_widget)
+        # View area
+        self.scene = QGraphicsScene()
+        self.view = CustomGraphicsView(self.scene, self)
 
         # File view area
         self.file_view = FileView(self)
-        self.layout.addWidget(self.file_view)
-
-        # View area
-        self.canvas = None
-        self.scene = QGraphicsScene()
-        self.view = CustomGraphicsView(self.scene, self)
-        self.layout.addWidget(self.view)
 
         # Filter area
         self.filter_widget = FilterWidget(self)
-        self.layout.addWidget(self.filter_widget)
 
         # Create menubar
         self.setMenuBar(MenuBar(self))
+
+        # Set layout
+        self.layout = QHBoxLayout(self.central_widget)
+        self.layout.addWidget(self.file_view)
+        self.layout.addWidget(self.view)
+        self.layout.addWidget(self.filter_widget)
 
     def _config(self):
         self.setWindowTitle('Picture annotator')

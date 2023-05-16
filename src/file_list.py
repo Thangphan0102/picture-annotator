@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 try:
-    from PyQt6.QtWidgets import QListWidget, QGridLayout, QMainWindow
+    from PyQt6.QtWidgets import QListWidget, QGridLayout, QMainWindow, QGraphicsScene
 except ImportError:
     raise ImportError("Requires PyQt6")
 
@@ -27,6 +27,7 @@ class FileList(QListWidget):
         super().__init__()
 
         self.main_window = main_window
+        self.scene = self.main_window.scene
         self.directory_path = None
 
     def update_sub_view(self, directory_path=None):
@@ -63,7 +64,7 @@ class FileList(QListWidget):
         item = self.currentItem()
 
         # Clean the scene and the filter_widget
-        self.main_window.scene.clear()
+        self.scene.clear()
         self.main_window.filter_widget.reset()
 
         # Update the canvas to display the new selected image

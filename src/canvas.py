@@ -46,13 +46,13 @@ class Canvas(QWidget):
         # Class variable
         self.main_window = main_window
         self.image = Image(image_path)
+        self.main_window.scene.setSceneRect(self.image.rect().toRectF())
         if self.image.load_annotation():
             self.main_window.filter_widget.add_labels_from_dict(self.image.get_color_dict())
         self.drawing = False
         self.idle = True
         self.guide_line_on = True
         self.mouse_pos = None
-
 
         # Display the image
         self.main_window.scene.addPixmap(self.image)
