@@ -5,13 +5,13 @@ try:
 except ImportError:
     raise ImportError("Requires PyQt6")
 
-from file_list import FileList
-from menu_bar import MenuBar
-from file_view import FileView
-from filter_widget import FilterWidget
-from canvas import Canvas
-from graphics_view import CustomGraphicsView
-import config
+from src.file_list import FileList
+from src.menu_bar import MenuBar
+from src.file_view import FileView
+from src.filter_widget import FilterWidget
+from src.canvas import Canvas
+from src.graphics_view import CustomGraphicsView
+import src.config
 
 
 class UI(QMainWindow):
