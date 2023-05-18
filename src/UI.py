@@ -58,7 +58,12 @@ class UI(QMainWindow):
         self.layout.addWidget(self.view)
         self.layout.addWidget(self.filter_widget)
 
-    def _config(self):
+    def _config(self) -> None:
+        """ Add configurations to the main window
+
+        Returns:
+            None
+        """
         self.setWindowTitle('Picture annotator')
         self.setGeometry(1000, 300, 1400, 1000)
 

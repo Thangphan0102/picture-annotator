@@ -101,7 +101,12 @@ class Image(QPixmap):
             return True
         return False
 
-    def load_annotation(self):
+    def load_annotation(self) -> bool:
+        """ Check if there is an annotation file, and if it exists add them into the class attributes.
+
+        Returns:
+            bool: True for success, False otherwise
+        """
         if self.is_existed_annotation():
             result_dict = parse_xml(ET.parse(self.annotation_path).getroot())
             self.labels, self.bounding_boxes, self.label_color_dict = parse_annotation_dict(result_dict)

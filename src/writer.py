@@ -2,11 +2,24 @@ import os
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from config import *
+from src.config import *
 
 
 class Writer:
-    def __init__(self, image_path: str, width, height, depth=3):
+    """ A class helps to write annotations into a xml file
+
+    """
+
+    def __init__(self, image_path: str, width: int, height: int, depth: int = 3):
+        """ Initialize the instance
+
+        Args:
+            image_path (str): The absolute path to the image
+            width (int): The width of the image
+            height (int): The height of the image
+            depth (int ): Number of color channel(s), default is 3 for color images
+        """
+        # root
         self.image_path = Path(image_path)
 
         # annotation
@@ -36,7 +49,19 @@ class Writer:
         self.depth = ET.SubElement(self.size, 'depth')
         self.depth.text = f'{depth}'
 
-    def add_object(self, label, x1, y1, x2, y2):
+    def add_object(self, label: str, x1: int, y1: int, x2: int, y2: int) -> None:
+        """ Write the information of a bounding box into the xml file
+
+        Args:
+            label (str): The label name
+            x1 (int): X-coordinate of the top-left point of the rectangle
+            y1 (int): Y-coordinate of the top-left point of the rectangle
+            x2 (int): X-coordinate of the bottom-right point of the rectangle
+            y2 (int): Y-coordinate of the bottom-right point of the rectangle
+
+        Returns:
+            None
+        """
         # annotation/object
         object = ET.SubElement(self.annotation, 'object')
 
@@ -63,13 +88,39 @@ class Writer:
         ymax = ET.SubElement(bndbox, 'ymax')
         ymax.text = f'{y2}'
 
-    def add_label_color_dict(self, label, color):
+    def add_label_color_dict(self, label: str, color: str) -> None:
+        """ Write the information of the selected color corresponding to the label.
+
+        Args:
+            label (str): The label name
+            color (str): The hexadecimal color code. For example "ffffff" represents the color white.
+
+        Returns:
+            None
+        """
+        # annotation/color_dict
         color_dict = ET.SubElement(self.annotation, 'color_dict')
         color_dict.set(label, color)
 
-    def save(self):
+    def save(self, path: str = None) -> str:
+        """ Save the annotated xml file
+
+        Args:
+            path (str): The specified path to save the annotation file. The default is None and the xml file will be
+                saved into y2_2023_08713_picture_annotator/data/annotations.
+
+        Returns:
+            saved_path (str): The path to the saved xml file.
+        """
         # XML tree
         tree = ET.ElementTree(self.annotation)
         ET.indent(tree, space='    ')
 
-        tree.write(ANNOTATION_DIR.joinpath(self.image_path.with_suffix('.xml').name), encoding='utf-8')
+        if path is None:
+            save_path = ANNOTATION_DIR.joinpath(self.image_path.with_suffix('.xml').name)
+            tree.write(save_path, encoding='utf-8')
+        else:
+            save_path = path
+            tree.write(path, encoding='utf-8')
+
+        return save_path

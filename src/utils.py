@@ -37,7 +37,7 @@ def parse_xml(node: ET.Element) -> Dict[str, Any]:
     return result_dict
 
 
-def parse_annotation_dict(result_dict: Dict) -> \
+def parse_annotation_dict(result_dict: Dict[str, Any]) -> \
         Tuple[
             List[str],
             List[Tuple[int, int, int, int]],
@@ -46,12 +46,11 @@ def parse_annotation_dict(result_dict: Dict) -> \
     """ Parse the result_dict of the parse_xml function into labels, bounding boxes, and label_color_dict
 
     Args:
-        result_dict (): The dictionary returned from the parse_xml function
+        result_dict (Dict[str, Any]): The dictionary returned from the parse_xml function
 
     Returns:
         Tuple[labels, bounding_boxes, label_color_dict]
     """
-
     # Get the objects
     objects = result_dict["annotation"]["object"]
     dict_list = result_dict["annotation"]["color_dict"]
@@ -60,6 +59,7 @@ def parse_annotation_dict(result_dict: Dict) -> \
     labels = []
     bounding_boxes = []
     label_color_dict = {}
+
     for obj in objects:
         bounding_box = obj["bndbox"]
         xmin = int(bounding_box["xmin"])
@@ -70,6 +70,7 @@ def parse_annotation_dict(result_dict: Dict) -> \
         bounding_boxes.append((xmin, ymin, xmax, ymax))
 
         labels.append(obj["name"])
+
     if len(dict_list) > 1:
         for dic in dict_list:
             label_color_dict.update(dic)
@@ -77,10 +78,3 @@ def parse_annotation_dict(result_dict: Dict) -> \
         label_color_dict = dict_list
 
     return labels, bounding_boxes, label_color_dict
-
-
-if __name__ == '__main__':
-    result = parse_xml(
-        ET.parse('/Users/thangphan/y2_2023_08713_picture_annotator/data/annotations/2007_000121.xml').getroot())
-
-    print(parse_annotation_dict(result))
