@@ -8,9 +8,9 @@ try:
 except ImportError:
     raise ImportError("Requires PyQt6")
 
-from image import Image
-from writer import Writer
-from config import *
+from src.image import Image
+from src.writer import Writer
+from src.config import *
 
 
 class Canvas(QWidget):

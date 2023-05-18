@@ -7,8 +7,8 @@ try:
 except ImportError:
     raise ImportError("Requires PyQt6")
 
-from canvas import Canvas
-from config import IMAGE_EXTENSIONS
+from src.canvas import Canvas
+from src.config import IMAGE_EXTENSIONS
 
 
 class FileList(QListWidget):
