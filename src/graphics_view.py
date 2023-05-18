@@ -7,7 +7,7 @@ try:
 except ImportError:
     raise ImportError("Requires PyQt6")
 
-from src.canvas import Canvas
+from canvas import Canvas
 
 
 class CustomGraphicsView(QGraphicsView):

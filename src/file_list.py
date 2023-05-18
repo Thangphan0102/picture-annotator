@@ -7,8 +7,8 @@ try:
 except ImportError:
     raise ImportError("Requires PyQt6")
 
-from src.canvas import Canvas
-from src.config import IMAGE_EXTENSIONS
+from canvas import Canvas
+from config import IMAGE_EXTENSIONS
 
 
 class FileList(QListWidget):
@@ -18,7 +18,7 @@ class FileList(QListWidget):
         main_window (QMainWindow): The parent main window of the widget
         directory_path (str): The string represents the opened directory containing the images
     """
-    def __init__(self, main_window: QMainWindow = None):
+    def __init__(self, main_window: QMainWindow):
         """ Initialize the instance given the main_window
 
         Args:
@@ -27,8 +27,7 @@ class FileList(QListWidget):
         super().__init__()
 
         self.main_window = main_window
-        if self.main_window is not None:
-            self.scene = self.main_window.scene
+        self.scene = self.main_window.scene
         self.directory_path = None
 
     def update_sub_view(self, directory_path=None):

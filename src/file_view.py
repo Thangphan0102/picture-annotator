@@ -3,7 +3,7 @@ try:
 except ImportError:
     raise ImportError("Requires PyQt6")
 
-from src.file_list import FileList
+from file_list import FileList
 
 
 class FileView(QWidget):

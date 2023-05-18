@@ -7,8 +7,8 @@ try:
 except ImportError:
     raise ImportError("Requires PyQt6")
 
-from src.config import *
-from src.utils import parse_xml, parse_annotation_dict
+from config import *
+from utils import parse_xml, parse_annotation_dict
 
 
 class Image(QPixmap):
