@@ -18,18 +18,22 @@ y2_2023_08713_picture_annotator/
 │  ├─ project_plan.pdf
 │  ├─ project_document.pdf
 ├─ src/
-│  ├─ menu_bar.py
-│  ├─ file_list.py
+│  ├─ test/
+│  │  ├─ test.py
+│  ├─ canvas.py
+│  ├─ config.py
+│  ├─ flie_list.py
 │  ├─ file_view.py
 │  ├─ filter_widget.py
 │  ├─ graphics_view.py
 │  ├─ image.py
+│  ├─ menu_bar.py
 │  ├─ UI.py
-│  ├─ canvas.py
-│  ├─ config.py
+│  ├─ utils.py
 │  ├─ writer.py
 ├─ .gitignore
 ├─ dataset.py
+├─ rcnn.py
 ├─ README.md
 └─ requirements.txt
 ```
