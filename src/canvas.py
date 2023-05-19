@@ -341,6 +341,7 @@ class Canvas(QWidget):
                 self.main_window.filter_widget.undo(label)
                 self.image.visible.pop(label)
             self.update()
+            self.main_window.statusBar().showMessage("Performed undo.", 3000)
 
     def reset(self):
         """ Reset action.
@@ -357,6 +358,7 @@ class Canvas(QWidget):
             self.image.visible.clear()
             self.main_window.filter_widget.reset()
             self.update()
+            self.main_window.statusBar().showMessage("Performed reset.", 3000)
 
     def save(self) -> None:
         """ Save action.
@@ -375,7 +377,9 @@ class Canvas(QWidget):
         for label, color in self.image.get_color_dict().items():
             writer.add_label_color_dict(label, color)
 
-        writer.save()
+        save_path = writer.save()
+
+        self.main_window.statusBar().showMessage(f"Performed save. Saved to {save_path}.", 5000)
 
     def print_labels(self) -> None:
         """ Display annotations action.
@@ -389,6 +393,7 @@ class Canvas(QWidget):
         print(self.image.get_bounding_box())
         print(self.image.get_color_dict())
         print(self.image.get_visible())
+        self.main_window.statusBar().showMessage("Performed print.", 3000)
 
     def change_to_draw(self) -> None:
         """ Change to draw mode action.
@@ -399,6 +404,7 @@ class Canvas(QWidget):
         if self.VIEW_MODE:
             self.VIEW_MODE = False
             self.setMouseTracking(True)
+            self.main_window.statusBar().showMessage("Changed to draw mode.", 3000)
 
     def change_to_view(self) -> None:
         """ Change to view mode action.
@@ -410,6 +416,7 @@ class Canvas(QWidget):
             self.VIEW_MODE = True
             self.setMouseTracking(False)
             self.repaint()
+            self.main_window.statusBar().showMessage("Changed to view mode.", 3000)
 
     def create_shortcuts(self) -> None:
         """ Assign the shortcuts for actions.

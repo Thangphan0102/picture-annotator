@@ -1,7 +1,7 @@
 import sys
 
 try:
-    from PyQt6.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QGraphicsScene
+    from PyQt6.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QGraphicsScene, QStatusBar, QVBoxLayout
 except ImportError:
     raise ImportError("Requires PyQt6")
 
@@ -49,14 +49,17 @@ class UI(QMainWindow):
         # Filter area
         self.filter_widget = FilterWidget(self)
 
-        # Create menubar
+        # Menubar
         self.setMenuBar(MenuBar(self))
 
+        self.statusBar()
+
         # Set layout
-        self.layout = QHBoxLayout(self.central_widget)
-        self.layout.addWidget(self.file_view)
-        self.layout.addWidget(self.view)
-        self.layout.addWidget(self.filter_widget)
+        self.layout2 = QHBoxLayout(self.central_widget)
+
+        self.layout2.addWidget(self.file_view)
+        self.layout2.addWidget(self.view)
+        self.layout2.addWidget(self.filter_widget)
 
     def _config(self) -> None:
         """ Add configurations to the main window
