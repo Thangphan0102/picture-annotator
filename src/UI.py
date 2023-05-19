@@ -52,6 +52,7 @@ class UI(QMainWindow):
         # Menubar
         self.setMenuBar(MenuBar(self))
 
+        # Status bar
         self.statusBar()
 
         # Set layout
