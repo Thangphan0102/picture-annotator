@@ -208,11 +208,18 @@ def evaluate_dataset(dataset, model):
 
 # Rest of the module handles usage of the VOCDection torchvision
 # dataset and might be useful when creating your own dataset
-
+# TODO: Change amount of classes in your dataset here
+# The background has label 0 and is one of the classes
 CLASS_DICT = {
-    "background": 0,
-    "cat": 1
-}
+        "background": 0,
+        "plane": 1,
+        "train": 2,
+        "keyboard": 3,
+        "monitor": 4,
+        "human": 5,
+        "cat": 6,
+        "duck": 7
+    }
 
 
 def target_transform(target):
@@ -273,8 +280,6 @@ if __name__ == "__main__":
         transform=tv.transforms.ToTensor(),
         target_transform=target_transform
     )
-    # TODO: Change amount of classes in your dataset here
-    # The background has label 0 and is one of the classes
     model = faster_rcnn(len(CLASS_DICT))
     train_rcnn(dataset, model)
     print("Training done")
